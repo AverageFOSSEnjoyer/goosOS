@@ -31,3 +31,6 @@ make run    # uses qemu to run the system
 - [ ] Scheduling
 - [ ] Network
 - [ ] GUI
+- [ ] Conversion to C
+
+Special thanks to http://wyoos.org for making such a great series!

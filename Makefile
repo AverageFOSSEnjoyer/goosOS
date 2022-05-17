@@ -20,13 +20,13 @@ mykernel.iso: mykernel.bin
 	mkdir iso/boot
 	mkdir iso/boot/grub
 	cp $< iso/boot/
-	echo 'set timeout=1' >> iso/boot/grub/grub.cfg
-	echo 'set default=0' >> iso/boot/grub/grub.cfg
-	echo '' >> iso/boot/grub/grub.cfg
-	echo 'menuentry "GoosOS" {' >> iso/boot/grub/grub.cfg
-	echo '	multiboot /boot/mykernel.bin' >> iso/boot/grub/grub.cfg
-	echo '	boot' >> iso/boot/grub/grub.cfg
-	echo '}' >> iso/boot/grub/grub.cfg
+	echo 'set timeout=1						' >> iso/boot/grub/grub.cfg
+	echo 'set default=0						' >> iso/boot/grub/grub.cfg
+	echo '									' >> iso/boot/grub/grub.cfg
+	echo 'menuentry "GoosOS" {				' >> iso/boot/grub/grub.cfg
+	echo '	multiboot /boot/mykernel.bin	' >> iso/boot/grub/grub.cfg
+	echo '	boot							' >> iso/boot/grub/grub.cfg
+	echo '}									' >> iso/boot/grub/grub.cfg
 	grub-mkrescue --output=$@ iso
 	rm -rf iso
 
@@ -37,10 +37,12 @@ all: kernel.cpp loader.s linker.ld
 	make mykernel.iso
 
 run:
-	qemu-system-i386 -cdrom ./mykernel.iso
+	-killall qemu-system-i386
+	sleep 1
+	qemu-system-i386 -cdrom ./mykernel.iso &
 
 clean:
-	rm *.o
-	rm *.bin
-	rm *.iso
-	rm -rf ./iso
+	-rm *.o;
+	-rm *.bin;
+	-rm *.iso;
+	-rm -rf ./iso;

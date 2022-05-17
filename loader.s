@@ -1,4 +1,4 @@
-.set MAGIC, 0x1badb002
+.set MAGIC, 0x1badb002              # badboot magic number
 .set FLAGS, (1<<0 | 1<<1)
 .set CHECKSUM, -(MAGIC + FLAGS)
 
@@ -13,7 +13,7 @@
 .global loader
 
 loader:
-    mov $kernel_stack, %esp
+    mov $kernel_stack, %esp         # mov stack pointer to top of kernel
     call call_constructors
     push %eax
     push %ebx
