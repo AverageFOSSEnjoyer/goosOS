@@ -1,4 +1,6 @@
 # goosOS
+![goos](https://c.tenor.com/HpQzsDBu5QwAAAAC/goose-honk.gif)
+
 ### What is this?
 This is just a personal educational project for me to learn more about the linux kernel structure.
 
