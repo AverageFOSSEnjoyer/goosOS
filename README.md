@@ -24,8 +24,7 @@ make run    # uses qemu to run the system
 
 ### Goals(subject to change):
 - [x] Bootable - 05/16/2022
-- [ ] Memory segmentation
-- [ ] GDT
+- [x] GDT - 05/17/2022
 - [ ] I/O
 - [ ] Driver
 - [ ] Interrupt

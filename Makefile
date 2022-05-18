@@ -1,7 +1,7 @@
-CFLAGS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore
+CFLAGS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector
 SFLAGS = --32
 LFLAGS = -melf_i386
-OBJ = loader.o kernel.o
+OBJ = loader.o kernel.o gdt.o port.o
 
 %.o: %.cpp
 	g++ $(CFLAGS) -o $@ -c $<
@@ -30,9 +30,10 @@ mykernel.iso: mykernel.bin
 	grub-mkrescue --output=$@ iso
 	rm -rf iso
 
-all: kernel.cpp loader.s linker.ld
+all: kernel.cpp loader.s linker.ld gdt.cpp
 	make kernel.o
-	make loader.s
+	make loader.o
+	make gdt.o
 	make mykernel.bin
 	make mykernel.iso
 
@@ -42,7 +43,4 @@ run:
 	qemu-system-i386 -cdrom ./mykernel.iso &
 
 clean:
-	-rm *.o;
-	-rm *.bin;
-	-rm *.iso;
-	-rm -rf ./iso;
+	-rm *.o *.bin *.iso

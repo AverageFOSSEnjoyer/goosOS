@@ -1,4 +1,4 @@
-.set MAGIC, 0x1badb002              # badboot magic number
+.set MAGIC, 0x1BADB002              # badboot magic number
 .set FLAGS, (1<<0 | 1<<1)
 .set CHECKSUM, -(MAGIC + FLAGS)
 
