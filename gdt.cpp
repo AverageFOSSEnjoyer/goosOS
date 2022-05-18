@@ -1,27 +1,5 @@
 #include "gdt.h"
 
-/*       GDT Layout
-    |------------------|
-    | 7 |   ptr_high   |
-    |------------------|
-    | 6 |    flags     |
-    |------------------|
-    |   |  limit_high  |
-    |------------------|
-    | 5 |    access    |
-    |------------------|
-    | 4 |   ptr_mid    |
-    |------------------|
-    | 3 |   ptr_low    |
-    |---|              |
-    | 2 |              |
-    |------------------|
-    | 1 |    limit     |
-    |---|              |
-    | 0 |              |
-    |------------------|
-*/
-
 uint32_t __stack_chk_fail_local(){
     return 0;
 }
@@ -32,8 +10,8 @@ global_descriptor_table::global_descriptor_table():
     code_segment_selector(0,64*1024*1024,0x9A),
     data_segement_selector(0,64*1024*1024,0x92) {
         uint32_t i[2];
-        i[0] = (uint32_t) this;
-        i[1] = sizeof(global_descriptor_table) << 16;
+        i[1] = (uint32_t) this;
+        i[0] = sizeof(global_descriptor_table) << 16;
         
         __asm__ volatile("lgdt (%0)": :"p" (((uint8_t*) i ) + 2)); 
     }
@@ -48,7 +26,7 @@ uint16_t global_descriptor_table::_code_segment_selector() {
     return (uint8_t*) &code_segment_selector - (uint8_t*) this;
 }
 
-global_descriptor_table::segment_descriptor::segment_descriptor(uint32_t ptr, uint32_t limit, uint8_t access) {
+global_descriptor_table::segment_descriptor::segment_descriptor(uint32_t base, uint32_t limit, uint8_t access) {
     uint8_t* target = (uint8_t*) this;
     if (limit <= 65536) {
         target[6] = 0x40;
@@ -66,15 +44,15 @@ global_descriptor_table::segment_descriptor::segment_descriptor(uint32_t ptr, ui
     target[1] = (limit >> 8) & 0xFF;
     target[6] = target[6] | ((limit >> 16) & 0xF);
 
-    target[2] = ptr & 0xFF;
-    target[3] = (ptr >> 8) & 0xFF;
-    target[4] = (ptr >> 16) & 0xFF;
-    target[7] = (ptr >> 24) & 0xFF;
+    target[2] = base & 0xFF;
+    target[3] = (base >> 8) & 0xFF;
+    target[4] = (base >> 16) & 0xFF;
+    target[7] = (base >> 24) & 0xFF;
 
     target[5] = access;
 }
 
-uint32_t global_descriptor_table::segment_descriptor::ptr() {
+uint32_t global_descriptor_table::segment_descriptor::base() {
     uint8_t* target = (uint8_t*) this;
     uint32_t result = target[7];
     result = (result << 8) + target[4];
