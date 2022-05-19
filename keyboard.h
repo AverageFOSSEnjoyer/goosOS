@@ -13,7 +13,7 @@ class keyboard_driver : public interrupt_handler {
         keyboard_driver(interrupt_manager* manager);
         ~keyboard_driver();
         virtual uint32_t handle_interrupt(uint32_t esp);
-        virtual char* keymap(uint8_t key);
+        virtual uint8_t keymap(uint8_t key);
 };
 
 #endif
