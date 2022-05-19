@@ -5,8 +5,16 @@
 #ifndef __INTERRUPT_H
 #define __INTERRUPT_H
 
+class interrupt_handler;
+
 class interrupt_manager {
+    friend class interrupt_handler;
+
     protected:
+
+        static interrupt_manager* active_interrupt_manager;
+        interrupt_handler* handlers[256];
+
         struct gate_descriptor {
             uint16_t handler_address_low;
             uint16_t gdt_code_segment_selector;
@@ -40,10 +48,25 @@ class interrupt_manager {
         ~interrupt_manager();
 
         static uint32_t handle_interrupt(uint8_t interrupt_number, uint32_t esp);
+        uint32_t do_handle_interrupt(uint8_t interrupt_number, uint32_t esp);
+
         static void ignore_interrupt_request();
         static void handle_interrupt_request0x00();
         static void handle_interrupt_request0x01();
-        static void activate();
+        void activate();
+        void deactivate();
+};
+
+class interrupt_handler {
+    protected:
+        uint8_t interrupt_number;
+        interrupt_manager* int_manager;
+        
+        interrupt_handler(uint8_t interrupt_number, interrupt_manager* int_manager);
+        ~interrupt_handler();
+
+    public:
+        virtual uint32_t handle_interrupt(uint32_t esp);
 };
 
 #endif

@@ -1,7 +1,7 @@
 CFLAGS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector
 SFLAGS = --32
 LFLAGS = -melf_i386
-OBJ = loader.o kernel.o gdt.o port.o interrupt.o interrupt_stubs.o
+OBJ = loader.o kernel.o gdt.o port.o interrupt.o interrupt_stubs.o keyboard.o
 
 %.o: %.cpp
 	g++ $(CFLAGS) -o $@ -c $<
@@ -37,6 +37,7 @@ all: kernel.cpp loader.s linker.ld gdt.cpp interrupt_stubs.s interrupt.cpp port.
 	make interrupt_stubs.o
 	make interrupt.o
 	make port.o
+	make keyboard.o
 	make mykernel.bin
 	make mykernel.iso
 
