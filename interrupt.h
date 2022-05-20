@@ -53,6 +53,7 @@ class interrupt_manager {
         static void ignore_interrupt_request();
         static void handle_interrupt_request0x00();
         static void handle_interrupt_request0x01();
+        static void handle_interrupt_request0x0C();
         void activate();
         void deactivate();
 };

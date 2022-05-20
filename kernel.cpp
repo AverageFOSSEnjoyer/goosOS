@@ -3,6 +3,7 @@
 // #include "port.h"
 #include "interrupt.h"
 #include "keyboard.h"
+#include "mouse.h"
 
 void term_scroll() {
     /* vga output pointer */
@@ -69,8 +70,10 @@ extern "C" void kernel_main(void* multiboot_structure, unsigned int magic_number
 
     interrupt_manager interrupt(&gdt);
 
+    mouse_driver mouse(&interrupt);
+    
     keyboard_driver keyboard(&interrupt);
-
+    
     interrupt.activate();
     
     while(1);

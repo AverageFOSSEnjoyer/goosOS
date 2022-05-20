@@ -24,18 +24,9 @@ keyboard_driver::~keyboard_driver() {}
 uint32_t keyboard_driver::handle_interrupt(uint32_t esp) {
     uint8_t key = data_port.read();
 
-    
-
-    // if (key < 0x80) {
-        char* out = " \0";
-        out[0] = keymap(key);
-        prints(out);
-        // char* msg = "0x00\n";
-        // char* hex = "0123456789ABCDEF";
-        // msg[2] = hex[(key >> 4) & 0x0F];
-        // msg[3] = hex[key & 0x0F];
-        // prints(msg);
-    // }
+    char* out = " \0";
+    out[0] = keymap(key);
+    prints(out);
 
     return esp;
 }

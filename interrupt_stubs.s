@@ -21,6 +21,7 @@ _ZN17interrupt_manager28handle_interrupt_request\num\()Ev:
 
 handle_interrupt_request 0x00
 handle_interrupt_request 0x01
+handle_interrupt_request 0x0C
 
 int_bottom:
     pusha

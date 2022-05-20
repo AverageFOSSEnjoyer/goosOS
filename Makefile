@@ -1,7 +1,7 @@
-CFLAGS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector
+CFLAGS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -Wno-write-strings
 SFLAGS = --32
 LFLAGS = -melf_i386
-OBJ = loader.o kernel.o gdt.o port.o interrupt.o interrupt_stubs.o keyboard.o
+OBJ = loader.o kernel.o gdt.o port.o interrupt.o interrupt_stubs.o keyboard.o mouse.o
 
 %.o: %.cpp
 	g++ $(CFLAGS) -o $@ -c $<
@@ -30,14 +30,8 @@ mykernel.iso: mykernel.bin
 	grub-mkrescue --output=$@ iso
 	rm -rf iso
 
-all: kernel.cpp loader.s linker.ld gdt.cpp interrupt_stubs.s interrupt.cpp port.cpp
-	make kernel.o
-	make loader.o
-	make gdt.o
-	make interrupt_stubs.o
-	make interrupt.o
-	make port.o
-	make keyboard.o
+all: 
+	make $(OBJ)
 	make mykernel.bin
 	make mykernel.iso
 

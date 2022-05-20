@@ -51,6 +51,7 @@ interrupt_manager::interrupt_manager(global_descriptor_table* gdt) :
     }
     set_interrupt_descriptor_table_entry(0x20, code_segment, &handle_interrupt_request0x00, 0, IDT_INTERRUPT_GATE);
     set_interrupt_descriptor_table_entry(0x21, code_segment, &handle_interrupt_request0x01, 0, IDT_INTERRUPT_GATE);
+    set_interrupt_descriptor_table_entry(0x2C, code_segment, &handle_interrupt_request0x0C, 0, IDT_INTERRUPT_GATE);
 
     pic_master_command.write(0x11);
     pic_slave_command.write(0x11);
