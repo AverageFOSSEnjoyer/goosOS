@@ -1,42 +1,33 @@
-CFLAGS = -m32 -fno-use-cxa-atexit -nostdlib -fno-builtin -fno-rtti -fno-exceptions -fno-leading-underscore -fno-stack-protector -Wno-write-strings
-SFLAGS = --32
-LFLAGS = -melf_i386
-OBJ = loader.o kernel.o gdt.o port.o interrupt.o interrupt_stubs.o keyboard.o mouse.o
+CFLAGS = -m32 -std=gnu99 -Wall -Wextra -Werror -fno-stack-protector
+AFLAGS = --32
+BFLAGS = -m32 -ffreestanding -O2 -nostdlib -lgcc
+OBJ = kernel.o boot.o gdt.o
 
-%.o: %.cpp
-	g++ $(CFLAGS) -o $@ -c $<
+%.o: %.c
+	gcc -c $< -o $@ $(CFLAGS)
 
 %.o: %.s
-	as $(SFLAGS) -o $@ $<
+	as $< -o $@ $(AFLAGS)
 
-mykernel.bin: linker.ld $(OBJ)
-	ld $(LFLAGS) -T $< -o $@ $(OBJ)
+goosOS.bin: $(OBJ)
+	gcc -T linker.ld -o $@ $(BFLAGS) $(OBJ) 
 
-install: mykernel.bin
-	sudo cp $< /boot/mykernel.bin
+goosOS.iso:
+	mkdir -p ./iso/boot/grub
+	echo 'menuentry "goosOS" {			' >> ./iso/boot/grub/grub.cfg
+	echo '	multiboot /boot/goosOS.bin	' >> ./iso/boot/grub/grub.cfg
+	echo '}								' >> ./iso/boot/grub/grub.cfg
+	mv ./goosOS.bin ./iso/boot/goosOS.bin
+	grub-mkrescue -o goosOS.iso ./iso
+	rm -rf ./iso
 
-mykernel.iso: mykernel.bin
-	mkdir iso
-	mkdir iso/boot
-	mkdir iso/boot/grub
-	cp $< iso/boot/
-	echo 'set timeout=1						' >> iso/boot/grub/grub.cfg
-	echo 'set default=0						' >> iso/boot/grub/grub.cfg
-	echo '									' >> iso/boot/grub/grub.cfg
-	echo 'menuentry "GoosOS" {				' >> iso/boot/grub/grub.cfg
-	echo '	multiboot /boot/mykernel.bin	' >> iso/boot/grub/grub.cfg
-	echo '	boot							' >> iso/boot/grub/grub.cfg
-	echo '}									' >> iso/boot/grub/grub.cfg
-	grub-mkrescue --output=$@ iso
-	rm -rf iso
-
-all: 
+all:
 	make $(OBJ)
-	make mykernel.bin
-	make mykernel.iso
+	make goosOS.bin
+	make goosOS.iso
 
 run:
-	qemu-system-i386 -cdrom ./mykernel.iso &
+	qemu-system-i386 -cdrom ./goosOS.iso &
 
 clean:
-	-rm *.o *.bin *.iso
+	-rm *.o *.iso

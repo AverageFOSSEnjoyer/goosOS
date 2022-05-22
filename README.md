@@ -28,8 +28,9 @@ make run    # uses qemu to run the system
 - [x] Interrupt - 05/18/2022
 - [x] I/O - 05/19/2022
 - [x] Driver - 05/20/2022
+- [ ] Conversion to C - WIP
 - [ ] Paging
 - [ ] Scheduling
 - [ ] Network
 - [ ] GUI
-- [ ] Conversion to C
+

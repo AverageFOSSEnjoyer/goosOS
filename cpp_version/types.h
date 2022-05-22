@@ -1,3 +1,4 @@
+/* datatype length failsafe */
 #ifndef __TYPES_H
 #define __TYPES_H                               
     typedef char int8_t;

@@ -1,26 +1,29 @@
-ENTRY(loader)
-OUTPUT_FORMAT(elf32-i386)
-OUTPUT_ARCH(i386:i386)
+/* bootloader entry point */
+ENTRY(boot)     
 
 SECTIONS {
-    . = 0x0100000;
-    .text : {
+    /* start section at 1MB to be recognized by the bootloader */
+    . = 1M;     
+
+    /* reference multiboot header and text for bootloader */
+    .text BLOCK(4K) : ALIGN(4K) {
         *(.multiboot)
-        *(.text*)
+        *(.text)
+    }
+
+    /* read only data section */
+    .rodata BLOCK(4K) : ALIGN(4K) {
         *(.rodata)
     }
-    .data : {
-        start_ctors = .;
-        KEEP(*(.init_array));
-        KEEP(*(SORT_BY_INIT_PRIORITY(.init_array.*)));
-        end_ctors = .;
+
+    /* initialized general data section */
+    .data BLOCK(4K) : ALIGN(4k) {
         *(.data)
     }
-    .bss : {
+
+    /* uninitialized data section and stack */
+    .bss BLOCK(4K) : ALIGN(4K) {
+        *(COMMON)
         *(.bss)
-    }
-    /DISCARD/ : {
-        *(.fini_array*)
-        *(.comment)
     }
 }
