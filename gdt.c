@@ -1,4 +1,5 @@
 #include "types.h"
+#include "helper.h"
 
 /*  Segment Descriptor Layout
     |------------------| 63
@@ -39,4 +40,27 @@ void create_descriptor(uint8_t* ptr, uint32_t base, uint32_t limit, uint8_t acce
     ptr[6] = ((limit >> 16) & 0x0F) | (flags << 4);
 
     ptr[7] = (base >> 24) & 0xFF;
+}
+
+void load_gdt(gdt_t* gdt) {
+    /* null descriptor */
+    create_descriptor(gdt->null_descriptor, 0, 0x00000, 0x00, 0x0);
+    
+    /* code descriptor */
+    create_descriptor(gdt->code_descriptor, 0, 0xFFFFF, 0x9A, 0xC);
+
+    /* data descriptor */
+    create_descriptor(gdt->data_descriptor, 0, 0xFFFFF, 0x92, 0xC);
+
+    uint32_t i[2];
+    i[1] = (uint32_t)gdt;
+    i[0] = sizeof(gdt_t) - 1;
+
+    __asm__ volatile(
+        "lgdt (%0)"
+        :
+
+        :
+        "p" (((uint8_t*)i) + 2)
+    );
 }

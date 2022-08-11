@@ -16,3 +16,13 @@ enum colors {
     yellow,
     white
 };
+
+typedef struct __attribute__((packed, aligned(8))) gdt_t {
+    uint8_t null_descriptor[8];
+    uint8_t code_descriptor[8];
+    uint8_t data_descriptor[8];
+} gdt_t;
+
+typedef struct __attribute__((packed, aligned(8))) idt_t {
+    uint8_t keyboard[8];
+} idt_t;

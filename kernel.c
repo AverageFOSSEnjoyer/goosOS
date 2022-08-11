@@ -1,7 +1,10 @@
 #include "types.h"
 #include "helper.h"
+#include <stdio.h>
 
-void create_descriptor(uint8_t* ptr, uint32_t base, uint32_t limit, uint8_t access, uint8_t flags);
+void load_gdt(gdt_t* gdt);
+
+void load_idt(gdt_t* gdt, idt_t* idt);
 
 void term_scroll() {
     /* vga output pointer */
@@ -37,31 +40,20 @@ void prints(uint8_t fg_color, uint8_t bg_color, const char* str) {
 
 
 void kernel_main() {
-    enum colors fg_color = cyan;
+    enum colors fg_color = yellow;
     enum colors bg_color = black;
 
-    uint8_t gdt[3 * 8];
+    // uint8_t gdt[3 * 8];
 
-    /* null descriptor */
-    create_descriptor(gdt, 0, 0x00000, 0x00, 0x0);
-    
-    /* code descriptor */
-    create_descriptor(gdt + 8, 0, 0xFFFFF, 0x9A, 0xC);
+    gdt_t gdt[1];
 
-    /* data descriptor */
-    create_descriptor(gdt + 16, 0, 0xFFFFF, 0x92, 0xC);
+    load_gdt(gdt);
 
-    uint32_t i[2];
-    i[1] = (uint32_t)gdt;
-    i[0] = 0x0002;
+    idt_t idt[1];
 
-    __asm__ volatile(
-        "lgdt (%0)"
-        :
+    load_idt(idt, gdt);
 
-        :
-        "p" (((uint8_t*)i) + 2)
-    );
+
     prints(fg_color, bg_color, "average goosOS enjoyer!\nB)");
     while(1);
 }
